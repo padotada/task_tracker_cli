@@ -52,3 +52,7 @@ pytest test_task_tracker.py -v
 ## Run with coverage report
 pip install pytest-cov
 pytest test_task_tracker.py --cov=task_cli --cov-report=term-missing
+
+## Acknowledgments
+
+This project is based on the [Task Tracker](https://roadmap.sh/projects/task-tracker) challenge from [roadmap.sh](https://roadmap.sh).
