@@ -1,8 +1,8 @@
 import pytest
 from task_tracker import add_task
 
-print(pytest.__version__)
-test_task_list = []
+# print(pytest.__version__)
+test_task_list = {}
 
 def test_add_to_list():
     add_task(test_task_list, 'Item 1')

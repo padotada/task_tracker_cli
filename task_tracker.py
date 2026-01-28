@@ -5,13 +5,13 @@ COMMAND = "task-cli"
 file_path = "task_file.json"
 
 def add_task(task_list: dict, item: str)->None:
-    task_list.update({len(task_list)+1:item})
+    task_list.update({len(task_list)+1:{"description":item, "status":"todo"}})
     with open(file_path, 'w') as f:
         json.dump(task_list, f, indent=4)
     print(f"Task added successfully (ID: {len(task_list)})")
 
-def update_task_list(task_list: dict, task_id: int, new_item:str) -> None:
-    task_list[task_id] = new_item
+def update_task_list(task_list: dict, task_id: str, new_item:str) -> None:
+    task_list[task_id] = {"description":new_item, "status":"todo"}
     with open(file_path, 'w') as f:
         json.dump(task_list, f, indent=4)
     print(f"Task {task_id} updated successfully")
@@ -28,9 +28,38 @@ def delete_task(task_list: dict, task_id: str) -> None:
     
 def clear_task_list(task_list: dict) -> None:
     task_list.clear()
+    with open(file_path, 'w') as f:
+        json.dump(task_list, f, indent=4)
+
+def mark_in_progress(task_list: dict, item_id: str) -> None:
+    if len(task_list) == 0:
+        print("There is no task to mark as in progress.")
+    else:
+        task_list[item_id].update({"status":"in-progress"})
+        with open(file_path, 'w') as f:
+            json.dump(task_list, f, indent=4)
+        print(f"Task {item_id} has been marked as in progress.")
+        
+        
+def mark_as_done(task_list: dict, item_id: str) -> None:
+    if len(task_list) == 0:
+        print("There is no task to mark as done.")
+    else:
+        task_list[item_id].update({"status":"done"})
+        with open(file_path, 'w') as f:
+            json.dump(task_list, f, indent=4)
+        print(f"Task {item_id} has been marked as done.")
+
+
+def print_task_list(task_list: dict) -> None:
+    print("-------------------------------")
+    if len(task_list) == 0:
+        print("Nothing to print")
+    else:
+        for key, value in task_list.items():
+            print(f'Key: {key}, Task: {value["description"]}, Status: {value["status"]}')
+    print("-------------------------------")
     
-def print_task_list(task_list:dict) -> None:
-    print(task_list)
     
 def main():
     task_list = {}
@@ -42,13 +71,13 @@ def main():
     if len(sys.argv) < 2:
         print('Try again.')
     else:
-        cmd = sys.argv[1]
+        cmd = sys.argv[1].lower().strip()
         if cmd == 'add':
             item = sys.argv[2]
             add_task(task_list, item)
             # print(task_list)
         elif cmd == 'update':
-            item_id = int(sys.argv[2])
+            item_id = sys.argv[2]
             new_item = sys.argv[3]
             update_task_list(task_list, item_id, new_item)
             
@@ -57,13 +86,21 @@ def main():
             delete_task(task_list, item_id)
             
         elif cmd == 'mark-in-progress':
-            pass
+            item_id = sys.argv[2]
+            mark_in_progress(task_list, item_id)
+            
         elif cmd == 'mark-done':
-            pass
+            item_id = sys.argv[2]
+            mark_as_done(task_list, item_id)
+            
         elif cmd == 'list':
             print_task_list(task_list)
+            
         elif cmd == 'clear':
             clear_task_list(task_list)
+        
+        else:
+            print("This is not a valid command. Try again.")
 
 if __name__ == '__main__':
     main()
