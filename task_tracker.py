@@ -1,6 +1,8 @@
 import sys
 import os
 import json
+from datetime import date, datetime
+
 COMMAND = "task-cli"
 file_path = "task_file.json"
 
@@ -11,7 +13,7 @@ def add_task(task_list: dict, item: str)->None:
     print(f"Task added successfully (ID: {len(task_list)})")
 
 def update_task_list(task_list: dict, task_id: str, new_item:str) -> None:
-    task_list[task_id] = {"description":new_item, "status":"todo"}
+    task_list[task_id].update({"description":new_item})
     with open(file_path, 'w') as f:
         json.dump(task_list, f, indent=4)
     print(f"Task {task_id} updated successfully")
@@ -54,19 +56,47 @@ def mark_as_done(task_list: dict, item_id: str) -> None:
 def print_task_list(task_list: dict) -> None:
     print("-------------------------------")
     if len(task_list) == 0:
-        print("Nothing to print")
+        print("No tasks to print")
     else:
         for key, value in task_list.items():
             print(f'Key: {key}, Task: {value["description"]}, Status: {value["status"]}')
     print("-------------------------------")
-    
-    
+
+def print_done_tasks(task_list: dict) -> None:
+    print("-------------------------------")
+    if len(task_list) == 0:
+        print("No tasks to print")
+    else:
+        for key, value in task_list.items():
+            if value["status"] == "done":
+                print(f'Key: {key}, Task: {value["description"]}, Status: {value["status"]}')
+    print("-------------------------------")
+
+def print_tasks_in_progress(task_list: dict) -> None:
+    print("-------------------------------")
+    if len(task_list) == 0:
+        print("No tasks to print")
+    else:
+        for key, value in task_list.items():
+            if value["status"] == "in-progress":
+                print(f'Key: {key}, Task: {value["description"]}, Status: {value["status"]}')
+    print("-------------------------------")
+
+def print_tasks_todo(task_list: dict) -> None:
+    print("-------------------------------")
+    if len(task_list) == 0:
+        print("No tasks to print")
+    else:
+        for key, value in task_list.items():
+            if value["status"] == "todo":
+                print(f'Key: {key}, Task: {value["description"]}, Status: {value["status"]}')
+    print("-------------------------------")
+
 def main():
     task_list = {}
     if os.path.isfile(file_path):
         with open(file_path, 'r') as json_file:
             task_list = json.load(json_file)
-    # print(task_list)
     # print(f'Type a command in addition to {COMMAND}')
     if len(sys.argv) < 2:
         print('Try again.')
@@ -75,7 +105,6 @@ def main():
         if cmd == 'add':
             item = sys.argv[2]
             add_task(task_list, item)
-            # print(task_list)
         elif cmd == 'update':
             item_id = sys.argv[2]
             new_item = sys.argv[3]
@@ -92,10 +121,19 @@ def main():
         elif cmd == 'mark-done':
             item_id = sys.argv[2]
             mark_as_done(task_list, item_id)
-            
         elif cmd == 'list':
-            print_task_list(task_list)
-            
+            if len(sys.argv) == 2:
+                print_task_list(task_list)
+            else:
+                second_cmd = sys.argv[2].lower().strip()
+                if second_cmd == 'done':
+                    print_done_tasks(task_list)
+                elif second_cmd == 'todo':
+                    print_tasks_todo(task_list)
+                elif second_cmd == 'in-progress':
+                    print_tasks_in_progress(task_list)
+                else:
+                    print("Invalid command.")
         elif cmd == 'clear':
             clear_task_list(task_list)
         
