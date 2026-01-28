@@ -7,10 +7,15 @@ COMMAND = "task-cli"
 file_path = "task_file.json"
 
 def add_task(task_list: dict, item: str)->None:
-    task_list.update({len(task_list)+1:{"description":item, "status":"todo"}})
+    if len(task_list) == 0:
+        task_id = "1"
+    else:
+        max_id = max(int(key) for key in task_list.keys())
+        task_id = str(max_id + 1)
+    task_list.update({task_id:{"description":item, "status":"todo"}})
     with open(file_path, 'w') as f:
         json.dump(task_list, f, indent=4)
-    print(f"Task added successfully (ID: {len(task_list)})")
+    print(f"Task added successfully (ID: {task_id})")
 
 def update_task_list(task_list: dict, task_id: str, new_item:str) -> None:
     task_list[task_id].update({"description":new_item})
