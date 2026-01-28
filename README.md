@@ -7,7 +7,9 @@ A simple command-line task tracker to manage your to-do list. Tasks are stored i
 1. Ensure you have Python 3 installed
 2. Clone or download this repository
 3. Navigate to the project directory
-- cd "Task Tracker CLI"
+    ```bash
+    cd "Task Tracker CLI"
+    ```
 
 ## Usage
 
@@ -41,12 +43,12 @@ python3 task_tracker.py <command> [arguments]
 Tasks are saved to `task_file.json` in the same directory as the script.
 
 
-# Install pytest if you haven't
+## Install pytest if you haven't
 pip install pytest
 
-# Run all tests
+## Run all tests
 pytest test_task_tracker.py -v
 
-# Run with coverage report
+## Run with coverage report
 pip install pytest-cov
 pytest test_task_tracker.py --cov=task_cli --cov-report=term-missing
